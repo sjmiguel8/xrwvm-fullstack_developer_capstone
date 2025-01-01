@@ -18,14 +18,21 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-from django.contrib.auth import views
+from djangoapp import views as djangoapp_views
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
-    path('contact/', TemplateView.as_view(template_name="Contact.html")),
-    path('about/', TemplateView.as_view(template_name="About.html")),
+    path('', TemplateView.as_view(template_name="Home.html"), name='home'),
+    path('about/', TemplateView.as_view(template_name="About.html"), name='about'),
+    path('contact/', TemplateView.as_view(template_name="Contact.html"), name='contact'),
     path('admin/', admin.site.urls),
     path('djangoapp/', include('djangoapp.urls')),
-    path('', TemplateView.as_view(template_name="Home.html")),
-    path('login/', TemplateView.as_view(template_name="index.html")),
-    path('logout/', views.logout_request, name='logout'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('login/', TemplateView.as_view(template_name="login.html"), name='login'),
+    path('register/', TemplateView.as_view(template_name="register.html"), name='register'),
+    path('djangoapp/logout/', djangoapp_views.logout_request, name='logout'),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
