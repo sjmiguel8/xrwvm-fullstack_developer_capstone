@@ -1,5 +1,3 @@
+django
+djangorestframework
 requests
-Django
-Pillow
-gunicorn
-python-dotenv

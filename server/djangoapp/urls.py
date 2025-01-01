@@ -16,4 +16,12 @@ urlpatterns = [
 
     # path for add a review view
     path('logout', views.logout_request, name='logout'),
+
+    # Add this new path for reviews
+    path('reviews/', views.get_reviews, name='reviews'),
+
+    # New dealer endpoints
+    path('dealers/', views.get_dealers, name='get_dealers'),
+    path('dealers/<str:state>/', views.get_dealers_by_state, name='get_dealers_by_state'),
+    path('dealer/<int:id>/', views.get_dealer_by_id, name='get_dealer_by_id'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

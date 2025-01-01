@@ -14,6 +14,7 @@ import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
+from .models import Review, Dealer  # Make sure to import your Review and Dealer models
 
 
 # Get an instance of a logger
@@ -107,3 +108,42 @@ def registration(request):
 # Create a `add_review` view to submit a review
 # def add_review(request):
 # ...
+
+@csrf_exempt
+def get_reviews(request):
+    if request.method == 'GET':
+        # Get all reviews from the database
+        reviews = Review.objects.all()
+        # Convert reviews to list of dictionaries
+        reviews_list = list(reviews.values())
+        return JsonResponse(reviews_list, safe=False)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def get_dealers(request):
+    """Fetch all dealers"""
+    if request.method == 'GET':
+        dealers = Dealer.objects.all()
+        dealers_list = list(dealers.values())
+        return JsonResponse(dealers_list, safe=False)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def get_dealers_by_state(request, state):
+    """Fetch dealers by state"""
+    if request.method == 'GET':
+        dealers = Dealer.objects.filter(state=state)
+        dealers_list = list(dealers.values())
+        return JsonResponse(dealers_list, safe=False)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def get_dealer_by_id(request, id):
+    """Fetch dealer by ID"""
+    if request.method == 'GET':
+        try:
+            dealer = Dealer.objects.get(id=id)
+            return JsonResponse(dealer.__dict__, safe=False)
+        except Dealer.DoesNotExist:
+            return JsonResponse({'error': 'Dealer not found'}, status=404)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
