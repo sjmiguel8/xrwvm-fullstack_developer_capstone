@@ -23,5 +23,8 @@ urlpatterns = [
     # New dealer endpoints
     path('dealers/', views.get_dealers, name='get_dealers'),
     path('dealers/<str:state>/', views.get_dealers_by_state, name='get_dealers_by_state'),
-    path('dealer/<int:id>/', views.get_dealer_by_id, name='get_dealer_by_id'),
+    path('fetchReviews/dealer/<int:dealer_id>', views.get_dealer_reviews, name='dealer_reviews'),
+    path('fetchDealers', views.get_dealers, name='get_dealers'),
+    path('fetchDealer/<int:dealer_id>', views.get_dealer_by_id, name='dealer_by_id'),
+    path('fetchDealers/<str:state>', views.get_dealers_by_state, name='dealers_by_state'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

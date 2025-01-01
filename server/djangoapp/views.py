@@ -98,8 +98,11 @@ def registration(request):
 # ...
 
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
-# def get_dealer_reviews(request,dealer_id):
-# ...
+@csrf_exempt
+def get_dealer_reviews(request, dealer_id):
+    reviews = Review.objects.filter(dealership_id=dealer_id)
+    reviews_list = list(reviews.values())
+    return JsonResponse({"reviews": reviews_list})
 
 # Create a `get_dealer_details` view to render the dealer details
 # def get_dealer_details(request, dealer_id):
@@ -138,12 +141,21 @@ def get_dealers_by_state(request, state):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
-def get_dealer_by_id(request, id):
+def get_dealer_by_id(request, dealer_id):
     """Fetch dealer by ID"""
     if request.method == 'GET':
         try:
-            dealer = Dealer.objects.get(id=id)
-            return JsonResponse(dealer.__dict__, safe=False)
+            dealer = Dealer.objects.get(id=dealer_id)
+            return JsonResponse({
+                "dealer": {
+                    "id": dealer.id,
+                    "name": dealer.name,
+                    "address": dealer.address,
+                    "city": dealer.city,
+                    "state": dealer.state,
+                    "zip_code": dealer.zip_code
+                }
+            })
         except Dealer.DoesNotExist:
             return JsonResponse({'error': 'Dealer not found'}, status=404)
     return JsonResponse({'error': 'Method not allowed'}, status=405)

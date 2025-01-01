@@ -1,0 +1,38 @@
+[
+    {
+        "model": "djangoapp.dealer",
+        "pk": 3,
+        "fields": {
+            "name": "Best Cars",
+            "address": "456 Oak Street",
+            "city": "Springfield",
+            "state": "Illinois",
+            "zip_code": "62701"
+        }
+    },
+    {
+        "model": "djangoapp.dealer",
+        "pk": 29,
+        "fields": {
+            "name": "Sample Dealer",
+            "address": "123 Main St",
+            "city": "Sample City",
+            "state": "Kansas",
+            "zip_code": "12345"
+        }
+    },
+    {
+        "model": "djangoapp.review",
+        "pk": 1,
+        "fields": {
+            "dealership": 29,
+            "name": "John Doe",
+            "review": "Great service!",
+            "purchase": true,
+            "purchase_date": "2023-01-01",
+            "car_make": "Toyota",
+            "car_model": "Camry",
+            "car_year": 2022
+        }
+    }
+] 
