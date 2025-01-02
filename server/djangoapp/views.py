@@ -87,31 +87,57 @@ def get_dealer_reviews(request, dealer_id):
 
 @csrf_exempt
 def get_dealers(request):
-    dealers = Dealer.objects.all()
-    return render(request, 'djangoapp/dealers.html', {'dealers': dealers})
+    try:
+        dealers = Dealer.objects.all()
+        dealers_list = []
+        for dealer in dealers:
+            dealers_list.append({
+                'id': dealer.id,
+                'name': dealer.name,
+                'city': dealer.city,
+                'address': dealer.address,
+                'state': dealer.state,
+                'zip_code': dealer.zip_code
+            })
+        print("Sending dealers:", dealers_list)  # Debug print
+        response = JsonResponse(dealers_list, safe=False)
+        response['Content-Type'] = 'application/json'
+        return response
+    except Exception as e:
+        print(f"Error in get_dealers: {str(e)}")  # Debug print
+        return JsonResponse(
+            {'error': str(e)}, 
+            status=500, 
+            content_type='application/json'
+        )
 
 @csrf_exempt
 def get_dealers_by_state(request, state):
-    dealers = Dealer.objects.filter(state=state)
-    dealers_list = list(dealers.values())
-    return JsonResponse(dealers_list, safe=False)
+    try:
+        dealers = Dealer.objects.filter(state=state)
+        dealers_list = list(dealers.values())
+        return JsonResponse(dealers_list, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 @csrf_exempt
 def get_dealer_by_id(request, dealer_id):
     try:
         dealer = Dealer.objects.get(id=dealer_id)
         return JsonResponse({
-            "dealer": {
+            "status": 200,
+            "dealer": [{
                 "id": dealer.id,
                 "name": dealer.name,
-                "address": dealer.address,
                 "city": dealer.city,
+                "address": dealer.address,
+                "zip": dealer.zip_code,
                 "state": dealer.state,
-                "zip_code": dealer.zip_code
-            }
+                "full_name": dealer.name
+            }]
         })
     except Dealer.DoesNotExist:
-        return JsonResponse({'error': 'Dealer not found'}, status=404)
+        return JsonResponse({"status": 404, "message": "Dealer not found"})
 
 @csrf_exempt
 def add_review(request):

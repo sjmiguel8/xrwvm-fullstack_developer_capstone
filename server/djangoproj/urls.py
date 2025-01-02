@@ -24,7 +24,7 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     # Static pages using TemplateView
-    path('', TemplateView.as_view(template_name="Home.html"), name='home'),
+    path('', TemplateView.as_view(template_name="index.html"), name='home'),
     path('about/', TemplateView.as_view(template_name="About.html"), name='about'),
     path('contact/', TemplateView.as_view(template_name="Contact.html"), name='contact'),
     
@@ -35,6 +35,7 @@ urlpatterns = [
     # Admin and app URLs
     path('admin/', admin.site.urls),
     path('djangoapp/', include('djangoapp.urls')),  # Changed to include djangoapp prefix
+    path('dealers/', TemplateView.as_view(template_name="index.html")),
 ]
 
 if settings.DEBUG:

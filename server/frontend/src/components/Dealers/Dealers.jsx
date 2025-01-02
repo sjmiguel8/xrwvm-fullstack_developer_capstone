@@ -4,67 +4,76 @@ import Header from '../Header/Header';
 import './Dealers.css';
 
 function Dealers() {
-  // State management
   const [dealers, setDealers] = useState([]);
   const [filteredDealers, setFilteredDealers] = useState([]);
   const [filterType, setFilterType] = useState('none');
   const [filterValue, setFilterValue] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchDealers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/djangoapp/fetchDealers/', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Fetched dealers:', data);
+        
+        if (Array.isArray(data)) {
+          setDealers(data);
+          setFilteredDealers(data);
+          setError(null);
+        } else {
+          throw new Error('Expected array of dealers');
+        }
+      } catch (error) {
+        console.error('Error fetching dealers:', error);
+        setError('Failed to load dealers');
+        setDealers([]);
+        setFilteredDealers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchDealers();
   }, []);
 
-  useEffect(() => {
-    filterDealers();
-  }, [filterType, filterValue, dealers]);
+  const handleFilterChange = (type, value) => {
+    setFilterType(type);
+    setFilterValue(value);
 
-  const fetchDealers = async () => {
-    try {
-      const response = await fetch('/djangoapp/fetchDealers');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setDealers(data);
-        setFilteredDealers(data);
-      } else {
-        console.error('Unexpected data format:', data);
-      }
-    } catch (error) {
-      console.error('Error fetching dealers:', error);
-    }
-  };
-
-  const filterDealers = () => {
-    if (filterType === 'none' || !filterValue) {
+    if (type === 'none' || !value) {
       setFilteredDealers(dealers);
       return;
     }
 
-    let filtered = dealers.filter(dealer => {
-      switch (filterType) {
+    const filtered = dealers.filter(dealer => {
+      switch (type) {
         case 'state':
-          return dealer.state === filterValue;
+          return dealer.state === value;
         case 'city':
-          return dealer.city.toLowerCase().includes(filterValue.toLowerCase());
-        case 'id':
-          return dealer.id === Number(filterValue);
+          return dealer.city === value;
         case 'name':
-          return dealer.name.toLowerCase().includes(filterValue.toLowerCase());
+          return dealer.name === value;
+        case 'id':
+          return dealer.id === parseInt(value);
         default:
           return true;
       }
     });
-    
     setFilteredDealers(filtered);
   };
-
-  // Get unique values for filters
-  const states = [...new Set(dealers.map(dealer => dealer.state))];
-  const cities = [...new Set(dealers.map(dealer => dealer.city))];
-  const names = [...new Set(dealers.map(dealer => dealer.name))];
-  const ids = [...new Set(dealers.map(dealer => dealer.id))];
 
   return (
     <div>
@@ -72,76 +81,87 @@ function Dealers() {
       <div className="dealers-container">
         <h2>Car Dealers</h2>
         
-        <div className="filters">
-          <div className="row mb-3">
-            <div className="col-md-4">
-              <select 
-                className="form-select"
-                value={filterType}
-                onChange={(e) => {
-                  setFilterType(e.target.value);
-                  setFilterValue('');
-                }}
-              >
-                <option value="none">Filter By...</option>
-                <option value="state">State</option>
-                <option value="city">City</option>
-                <option value="name">Dealer Name</option>
-                <option value="id">ID</option>
-              </select>
+        {error && <div className="alert alert-danger">{error}</div>}
+        
+        {loading ? (
+          <div>Loading dealers...</div>
+        ) : (
+          <>
+            <div className="filters">
+              <div className="row mb-3">
+                <div className="col-md-4">
+                  <select 
+                    className="form-select"
+                    value={filterType}
+                    onChange={(e) => handleFilterChange(e.target.value, '')}
+                  >
+                    <option value="none">Filter By...</option>
+                    <option value="state">State</option>
+                    <option value="city">City</option>
+                    <option value="name">Dealer Name</option>
+                    <option value="id">ID</option>
+                  </select>
+                </div>
+                {filterType !== 'none' && (
+                  <div className="col-md-4">
+                    <select
+                      className="form-select"
+                      value={filterValue}
+                      onChange={(e) => handleFilterChange(filterType, e.target.value)}
+                    >
+                      <option value="">Select {filterType}...</option>
+                      {filterType === 'state' && [...new Set(dealers.map(d => d.state))].map(state => (
+                        <option key={state} value={state}>{state}</option>
+                      ))}
+                      {filterType === 'city' && [...new Set(dealers.map(d => d.city))].map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                      {filterType === 'name' && [...new Set(dealers.map(d => d.name))].map(name => (
+                        <option key={name} value={name}>{name}</option>
+                      ))}
+                      {filterType === 'id' && [...new Set(dealers.map(d => d.id))].map(id => (
+                        <option key={id} value={id}>{id}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="col-md-4">
-              {filterType !== 'none' && (
-                <select
-                  className="form-select"
-                  value={filterValue}
-                  onChange={(e) => setFilterValue(e.target.value)}
-                >
-                  <option value="">Select {filterType}...</option>
-                  {filterType === 'state' && states.map(state => (
-                    <option key={state} value={state}>{state}</option>
-                  ))}
-                  {filterType === 'city' && cities.map(city => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                  {filterType === 'name' && names.map(name => (
-                    <option key={name} value={name}>{name}</option>
-                  ))}
-                  {filterType === 'id' && ids.map(id => (
-                    <option key={id} value={id}>{id}</option>
-                  ))}
-                </select>
-              )}
-            </div>
-          </div>
-        </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Dealer Name</th>
-              <th>City</th>
-              <th>Address</th>
-              <th>Zip</th>
-              <th>State</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredDealers.map((dealer) => (
-              <tr key={dealer.id}>
-                <td>{dealer.id}</td>
-                <td>
-                  <Link to={`/dealer/${dealer.id}`}>{dealer.name}</Link>
-                </td>
-                <td>{dealer.city}</td>
-                <td>{dealer.address}</td>
-                <td>{dealer.zip_code}</td>
-                <td>{dealer.state}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Dealer Name</th>
+                  <th>City</th>
+                  <th>Address</th>
+                  <th>Zip</th>
+                  <th>State</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dealers.length > 0 ? (
+                  (filterType === 'none' ? dealers : filteredDealers).map((dealer) => (
+                    <tr key={dealer.id}>
+                      <td>{dealer.id}</td>
+                      <td>
+                        <Link to={`/dealer/${dealer.id}`}>{dealer.name}</Link>
+                      </td>
+                      <td>{dealer.city}</td>
+                      <td>{dealer.address}</td>
+                      <td>{dealer.zip_code}</td>
+                      <td>{dealer.state}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="text-center">No dealers found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
     </div>
   );
