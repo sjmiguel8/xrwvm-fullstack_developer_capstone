@@ -93,18 +93,22 @@ def get_dealers(request):
         for dealer in dealers:
             dealers_list.append({
                 'id': dealer.id,
-                'name': dealer.name,
+                'name': dealer.full_name,
                 'city': dealer.city,
-                'address': dealer.address,
                 'state': dealer.state,
-                'zip_code': dealer.zip_code
+                'address': dealer.address,
+                'zip': dealer.zip,
+                'lat': dealer.lat,
+                'long': dealer.long,
+                'short_name': dealer.short_name,
+                'st': dealer.st
             })
-        print("Sending dealers:", dealers_list)  # Debug print
+        print("Sending dealers:", dealers_list)
         response = JsonResponse(dealers_list, safe=False)
         response['Content-Type'] = 'application/json'
         return response
     except Exception as e:
-        print(f"Error in get_dealers: {str(e)}")  # Debug print
+        print(f"Error in get_dealers: {str(e)}")
         return JsonResponse(
             {'error': str(e)}, 
             status=500, 

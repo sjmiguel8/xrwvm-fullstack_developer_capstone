@@ -37,12 +37,19 @@ class CarModel(models.Model):
         return f"{self.car_make.name} {self.name} ({self.year})"
         
 class Dealer(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    address = models.CharField(max_length=200)
+    id = models.IntegerField(primary_key=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=10)
+    st = models.CharField(max_length=2)  # State abbreviation
+    address = models.CharField(max_length=100)
+    zip = models.CharField(max_length=10)
+    lat = models.FloatField(default=0.0)
+    long = models.FloatField(default=0.0)
+    short_name = models.CharField(max_length=100, default='')
+    full_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.full_name
 
 class Review(models.Model):
     id = models.AutoField(primary_key=True)

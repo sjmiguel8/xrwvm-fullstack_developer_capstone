@@ -15,7 +15,7 @@ function Dealers() {
     const fetchDealers = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/djangoapp/fetchDealers/', {
+        const response = await fetch('/djangoapp/fetchDealers', {
           method: 'GET',
           headers: {
             'Accept': 'application/json'
@@ -133,10 +133,12 @@ function Dealers() {
                 <tr>
                   <th>ID</th>
                   <th>Dealer Name</th>
+                  <th>Short Name</th>
                   <th>City</th>
+                  <th>State</th>
                   <th>Address</th>
                   <th>Zip</th>
-                  <th>State</th>
+                  <th>Location</th>
                 </tr>
               </thead>
               <tbody>
@@ -147,15 +149,25 @@ function Dealers() {
                       <td>
                         <Link to={`/dealer/${dealer.id}`}>{dealer.name}</Link>
                       </td>
+                      <td>{dealer.short_name}</td>
                       <td>{dealer.city}</td>
+                      <td>{dealer.state} ({dealer.st})</td>
                       <td>{dealer.address}</td>
-                      <td>{dealer.zip_code}</td>
-                      <td>{dealer.state}</td>
+                      <td>{dealer.zip}</td>
+                      <td>
+                        <a 
+                          href={`https://maps.google.com/?q=${dealer.lat},${dealer.long}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Map
+                        </a>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center">No dealers found</td>
+                    <td colSpan="8" className="text-center">No dealers found</td>
                   </tr>
                 )}
               </tbody>
