@@ -1,0 +1,37 @@
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}Dealers{% endblock %}
+
+{% block content %}
+<div class="dealers-section">
+    <h2>Car Dealers</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Dealer Name</th>
+                <th>City</th>
+                <th>Address</th>
+                <th>Zip</th>
+                <th>State</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dealer in dealers %}
+            <tr>
+                <td>{{ dealer.id }}</td>
+                <td><a href="/dealer/{{ dealer.id }}">{{ dealer.name }}</a></td>
+                <td>{{ dealer.city }}</td>
+                <td>{{ dealer.address }}</td>
+                <td>{{ dealer.zip_code }}</td>
+                <td>{{ dealer.state }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No dealers found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

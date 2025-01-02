@@ -34,5 +34,83 @@
             "car_model": "Camry",
             "car_year": 2022
         }
+    },
+    {
+        "model": "djangoapp.dealer",
+        "pk": 30,
+        "fields": {
+            "name": "Luxury Motors",
+            "address": "789 Elite Avenue",
+            "city": "Beverly Hills",
+            "state": "California",
+            "zip_code": "90210"
+        }
+    },
+    {
+        "model": "djangoapp.dealer",
+        "pk": 31,
+        "fields": {
+            "name": "Family Auto Center",
+            "address": "321 Suburban Lane",
+            "city": "Portland",
+            "state": "Oregon",
+            "zip_code": "97201"
+        }
+    },
+    {
+        "model": "djangoapp.review",
+        "pk": 2,
+        "fields": {
+            "dealership": 30,
+            "name": "Jane Smith",
+            "review": "Exceptional luxury car selection, but prices are steep.",
+            "purchase": true,
+            "purchase_date": "2023-06-15",
+            "car_make": "Mercedes",
+            "car_model": "S-Class",
+            "car_year": 2023
+        }
+    },
+    {
+        "model": "djangoapp.review",
+        "pk": 3,
+        "fields": {
+            "dealership": 31,
+            "name": "Bob Wilson",
+            "review": "Very friendly staff and great deals on family vehicles.",
+            "purchase": true,
+            "purchase_date": "2023-03-22",
+            "car_make": "Honda",
+            "car_model": "Odyssey",
+            "car_year": 2023
+        }
+    },
+    {
+        "model": "djangoapp.review",
+        "pk": 4,
+        "fields": {
+            "dealership": 29,
+            "name": "Sarah Johnson",
+            "review": "Just browsed, but impressive inventory.",
+            "purchase": false,
+            "purchase_date": null,
+            "car_make": "Ford",
+            "car_model": "Explorer",
+            "car_year": 2023
+        }
+    },
+    {
+        "model": "djangoapp.review",
+        "pk": 5,
+        "fields": {
+            "dealership": 3,
+            "name": "Mike Thompson",
+            "review": "Quick and hassle-free purchase process.",
+            "purchase": true,
+            "purchase_date": "2023-09-10",
+            "car_make": "Chevrolet",
+            "car_model": "Silverado",
+            "car_year": 2023
+        }
     }
 ] 

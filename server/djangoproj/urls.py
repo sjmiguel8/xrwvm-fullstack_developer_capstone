@@ -23,15 +23,18 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
-     path('', TemplateView.as_view(template_name="Home.html"), name='home'),
+    # Static pages using TemplateView
+    path('', TemplateView.as_view(template_name="Home.html"), name='home'),
     path('about/', TemplateView.as_view(template_name="About.html"), name='about'),
     path('contact/', TemplateView.as_view(template_name="Contact.html"), name='contact'),
-    path('admin/', admin.site.urls),
-    path('djangoapp/', include('djangoapp.urls')),
+    
+    # Authentication related pages
     path('login/', TemplateView.as_view(template_name="login.html"), name='login'),
     path('register/', TemplateView.as_view(template_name="register.html"), name='register'),
-    path('djangoapp/logout/', djangoapp_views.logout_request, name='logout'),
-    path('', include('djangoapp.urls')),
+    
+    # Admin and app URLs
+    path('admin/', admin.site.urls),
+    path('djangoapp/', include('djangoapp.urls')),  # Changed to include djangoapp prefix
 ]
 
 if settings.DEBUG:

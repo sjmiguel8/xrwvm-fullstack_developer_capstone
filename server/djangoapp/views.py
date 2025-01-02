@@ -1,12 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from .models import Review, Dealer
-from .restapis import get_request, analyze_review_sentiments, post_review
+from .restapis import get_request, analyze_review_sentiments, post_review, get_dealers_from_cf
 import logging
 import json
+import requests
+from django.views.decorators.http import require_http_methods
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +24,15 @@ def login_user(request):
         data = {"userName": username, "status": "Authenticated"}
     return JsonResponse(data)
 
+@require_http_methods(["GET", "POST"])
 @csrf_exempt
 def logout_request(request):
+    print("Logout view called")
     logout(request)
-    return JsonResponse({"userName": ""})
+    return JsonResponse({
+        "status": "success",
+        "message": "Successfully logged out"
+    }, status=200)
 
 @csrf_exempt
 def registration(request):
@@ -81,8 +88,7 @@ def get_dealer_reviews(request, dealer_id):
 @csrf_exempt
 def get_dealers(request):
     dealers = Dealer.objects.all()
-    dealers_list = list(dealers.values())
-    return JsonResponse(dealers_list, safe=False)
+    return render(request, 'djangoapp/dealers.html', {'dealers': dealers})
 
 @csrf_exempt
 def get_dealers_by_state(request, state):
