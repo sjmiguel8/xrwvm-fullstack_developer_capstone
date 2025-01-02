@@ -1,0 +1,27 @@
+.navbar {
+    height: 1in !important;
+    padding: 0 20px;
+}
+
+.nav-item-custom {
+    font-size: 1.2rem !important;
+    padding: 0.5rem 1rem !important;
+    color: #333 !important;
+}
+
+.nav-item-custom:hover {
+    color: #000 !important;
+}
+
+.navbar-brand {
+    color: #333 !important;
+    font-weight: bold;
+}
+
+.navbar-nav {
+    align-items: center;
+}
+
+.nav-item {
+    margin: 0 10px;
+} 
