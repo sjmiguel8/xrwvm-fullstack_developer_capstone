@@ -1,11 +1,25 @@
 version: '3'
 services:
-  web:
-    build: ./server
+  mongo_db:
+    image: mongo:latest
     ports:
-      - "8000:8000"
+      - "27018:27017"
     volumes:
-      - ./server:/app
+      - mongodb_data:/data/db
+
+  express_app:
+    build: 
+      context: ./server/database
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    depends_on:
+      - mongo_db
     environment:
-      - DEBUG=1
-      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1 
+      - MONGODB_URI=mongodb://mongo_db:27017/dealershipsDB
+    volumes:
+      - ./server/database:/app
+      - /app/node_modules
+
+volumes:
+  mongodb_data: 
