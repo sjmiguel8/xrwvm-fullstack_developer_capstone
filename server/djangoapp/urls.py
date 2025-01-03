@@ -26,4 +26,5 @@ urlpatterns = [
 
     path('about/', TemplateView.as_view(template_name='index.html')),
     path('contact/', TemplateView.as_view(template_name='index.html')),
+    path('get_cars', views.get_cars, name='get_cars'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

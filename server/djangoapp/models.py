@@ -3,6 +3,7 @@
 from django.db import models
 from django.utils.timezone import now
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
 
 class CarMake(models.Model):
     name = models.CharField(max_length=100)
@@ -52,15 +53,20 @@ class Dealer(models.Model):
         return self.full_name
 
 class Review(models.Model):
-    id = models.AutoField(primary_key=True)
-    dealership = models.ForeignKey(Dealer, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    dealership = models.IntegerField()
     review = models.TextField()
-    purchase = models.BooleanField(default=False)
-    purchase_date = models.DateField(null=True, blank=True)
-    car_make = models.CharField(max_length=100)
-    car_model = models.CharField(max_length=100)
-    car_year = models.IntegerField()
+    purchase = models.BooleanField(default=True)
+    purchase_date = models.DateField(default=timezone.now)
+    car_make = models.CharField(max_length=100, blank=True, null=True)
+    car_model = models.CharField(max_length=100, blank=True, null=True)
+    car_year = models.CharField(max_length=4, blank=True, null=True)
+    
+    class Meta:
+        ordering = ['-purchase_date']  # Show newest reviews first
+
+    def __str__(self):
+        return f"Review by {self.name} for dealer {self.dealership}"
 
 class CarDealer(models.Model):
     id = models.AutoField(primary_key=True)

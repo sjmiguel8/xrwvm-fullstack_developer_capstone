@@ -61,21 +61,30 @@ def registration(request):
 
 @csrf_exempt
 def get_dealer_reviews(request, dealer_id):
-    if dealer_id:
-        endpoint = f"/fetchReviews/dealer/{dealer_id}"
-        reviews = get_request(endpoint)
+    try:
+        print(f"Fetching reviews for dealer {dealer_id}")
+        reviews = Review.objects.filter(dealership=dealer_id)
+        print(f"Found {reviews.count()} reviews")
         
-        if reviews is None:
-            return JsonResponse({"status": 404, "message": "No reviews found"})
-            
-        try:
-            for review in reviews:
-                sentiment = analyze_review_sentiments(review['review'])
-                review['sentiment'] = sentiment.get('sentiment', 'neutral')
-            return JsonResponse({"status": 200, "reviews": reviews})
-        except Exception as e:
-            print(f"Error processing reviews: {str(e)}")
-            return JsonResponse({"status": 500, "message": "Error processing reviews"})
+        reviews_list = [{
+            'name': review.name,
+            'dealership': review.dealership,
+            'review': review.review,
+            'purchase': review.purchase,
+            'purchase_date': review.purchase_date,
+            'car_make': review.car_make,
+            'car_model': review.car_model,
+            'car_year': review.car_year,
+        } for review in reviews]
+        
+        print(f"Formatted reviews: {reviews_list}")
+        return JsonResponse({
+            "status": 200,
+            "reviews": reviews_list
+        })
+    except Exception as e:
+        print(f"Error getting reviews: {str(e)}")
+        return JsonResponse({"status": 500, "message": str(e)})
             
     return JsonResponse({"status": 400, "message": "Bad Request"})
 
@@ -148,17 +157,52 @@ def get_dealer_by_id(request, dealer_id):
 
 @csrf_exempt
 def add_review(request):
-    if not request.user.is_anonymous:
-        try:
-            data = json.loads(request.body)
-            response = post_review(data)
-            return JsonResponse({"status": 200})
-        except Exception as e:
-            return JsonResponse({"status": 401, "message": f"Error in posting review: {str(e)}"})
-    return JsonResponse({"status": 403, "message": "Unauthorized"})
+    try:
+        data = json.loads(request.body)
+        print("Received review data:", data)  # Debug print
+        
+        # Create a new review in the database
+        review = Review.objects.create(
+            name=data['name'],
+            dealership=data['dealership'],
+            review=data['review'],
+            purchase=data.get('purchase', True),
+            purchase_date=data['purchase_date'],
+            car_make=data.get('car_make', ''),
+            car_model=data.get('car_model', ''),
+            car_year=data.get('car_year', '')
+        )
+        print(f"Created review: {review}")  # Debug print
+        
+        return JsonResponse({"status": 200})
+    except Exception as e:
+        print(f"Error creating review: {str(e)}")  # Debug print
+        return JsonResponse({
+            "status": 500,
+            "message": f"Error creating review: {str(e)}"
+        })
 
 @csrf_exempt
 def get_reviews(request):
     reviews = Review.objects.all()
     reviews_list = list(reviews.values())
     return JsonResponse(reviews_list, safe=False)
+
+@csrf_exempt
+def get_cars(request):
+    # Sample car data - you can replace this with your database query
+    car_models = [
+        {"CarMake": "Honda", "CarModel": "Civic"},
+        {"CarMake": "Honda", "CarModel": "Accord"},
+        {"CarMake": "Toyota", "CarModel": "Camry"},
+        {"CarMake": "Toyota", "CarModel": "Corolla"},
+        {"CarMake": "Ford", "CarModel": "F-150"},
+        {"CarMake": "Ford", "CarModel": "Mustang"},
+        {"CarMake": "Chevrolet", "CarModel": "Silverado"},
+        {"CarMake": "Chevrolet", "CarModel": "Camaro"}
+    ]
+    
+    return JsonResponse({
+        "status": 200,
+        "CarModels": car_models
+    })
