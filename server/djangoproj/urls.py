@@ -25,17 +25,19 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
     # Static pages using TemplateView
     path('', TemplateView.as_view(template_name="index.html"), name='home'),
-    path('about/', TemplateView.as_view(template_name="About.html"), name='about'),
-    path('contact/', TemplateView.as_view(template_name="Contact.html"), name='contact'),
+    path('about/', TemplateView.as_view(template_name="index.html")),
+    path('contact/', TemplateView.as_view(template_name="index.html")),
     
-    # Authentication related pages
-    path('login/', TemplateView.as_view(template_name="login.html"), name='login'),
-    path('register/', TemplateView.as_view(template_name="register.html"), name='register'),
-    
-    # Admin and app URLs
-    path('admin/', admin.site.urls),
-    path('djangoapp/', include('djangoapp.urls')),  # Changed to include djangoapp prefix
+    # React routes - all serve index.html
+    path('login/', TemplateView.as_view(template_name="index.html")),
+    path('register/', TemplateView.as_view(template_name="index.html")),
     path('dealers/', TemplateView.as_view(template_name="index.html")),
+    path('dealer/<int:id>/', TemplateView.as_view(template_name="index.html")),
+    path('postreview/<int:dealer_id>', TemplateView.as_view(template_name="index.html")),
+    
+    # API endpoints
+    path('admin/', admin.site.urls),
+    path('djangoapp/', include('djangoapp.urls')),
 ]
 
 if settings.DEBUG:

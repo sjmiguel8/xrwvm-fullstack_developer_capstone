@@ -4,6 +4,7 @@ import LoginPanel from './components/Login/Login';
 import RegisterPanel from './components/Register/Register';
 import Dealers from './components/Dealers/Dealers';
 import Dealer from './components/Dealers/Dealer';
+import PostReview from './components/Dealers/PostReview';
 import Header from './components/Header/Header';
 
 // Add these components for About and Contact pages
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: "/dealer/:id",
     element: <Dealer />
+  },
+  {
+    path: "/postreview/:id",
+    element: <PostReview />
   },
   {
     path: "/about",
