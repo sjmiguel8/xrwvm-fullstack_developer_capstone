@@ -17,8 +17,7 @@ COPY . $APP
 
 EXPOSE 8000
 
-# Create and make the entrypoint script executable
-RUN echo '#!/bin/bash\npython manage.py migrate\npython manage.py collectstatic --noinput\nexec "$@"' > /app/entrypoint.sh
+# Make the entrypoint script executable
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/bin/bash","/app/entrypoint.sh"]
