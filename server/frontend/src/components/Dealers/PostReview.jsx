@@ -14,13 +14,31 @@ const PostReview = () => {
 
   const { id } = useParams();
 
+  useEffect(() => {
+    // Check if user is logged in
+    if (!sessionStorage.getItem('username')) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const postreview = async () => {
-    if (!model || !review || !date || !year) {
-      alert("All details are mandatory");
+    if (!review || !date) {
+      alert("Please provide both a review and purchase date");
       return;
     }
 
-    const [make_chosen, model_chosen] = model.split(" ");
+    const reviewData = {
+      name: sessionStorage.getItem("username"),
+      dealership: id,
+      review: review,
+      purchase: true,
+      purchase_date: date,
+      car_make: model ? model.split(" ")[0] : "",
+      car_model: model ? model.split(" ")[1] : "",
+      car_year: year || "",
+    };
+
+    console.log('Sending review data:', reviewData);
 
     try {
       const response = await fetch('/djangoapp/add_review', {
@@ -28,21 +46,16 @@ const PostReview = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: sessionStorage.getItem("username"),
-          dealership: id,
-          review: review,
-          purchase: true,
-          purchase_date: date,
-          car_make: make_chosen,
-          car_model: model_chosen,
-          car_year: year,
-        })
+        body: JSON.stringify(reviewData)
       });
 
       const data = await response.json();
+      console.log('Review submission response:', data);
+      
       if (data.status === 200) {
         navigate(`/dealer/${id}`);
+      } else {
+        alert('Failed to post review: ' + (data.message || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error posting review:', error);
@@ -80,7 +93,7 @@ const PostReview = () => {
       <div className="container mt-4">
         <h1 className="mb-4">{dealer.full_name}</h1>
         <div className="mb-3">
-          <label className="form-label">Your Review</label>
+          <label className="form-label">Your Review *</label>
           <textarea 
             className="form-control"
             rows="5"
@@ -91,7 +104,7 @@ const PostReview = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Purchase Date</label>
+          <label className="form-label">Purchase Date *</label>
           <input 
             type="date"
             className="form-control"
@@ -102,12 +115,11 @@ const PostReview = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Car Make and Model</label>
+          <label className="form-label">Car Make and Model (Optional)</label>
           <select 
             className="form-select"
             value={model}
             onChange={(e) => setModel(e.target.value)}
-            required
           >
             <option value="">Choose Car Make and Model</option>
             {carmodels.map((car, index) => (
@@ -119,7 +131,7 @@ const PostReview = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Car Year</label>
+          <label className="form-label">Car Year (Optional)</label>
           <input 
             type="number"
             className="form-control"
@@ -127,7 +139,6 @@ const PostReview = () => {
             onChange={(e) => setYear(e.target.value)}
             min="2015"
             max="2024"
-            required
           />
         </div>
 

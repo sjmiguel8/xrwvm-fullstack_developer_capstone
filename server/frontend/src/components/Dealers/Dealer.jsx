@@ -30,11 +30,15 @@ const Dealer = () => {
 
   const fetchReviews = useCallback(async () => {
     try {
+      console.log('Fetching reviews for dealer:', id);
       const response = await fetch(`/djangoapp/fetchReviews/dealer/${id}`);
       const data = await response.json();
       
+      console.log('Review data received:', data);
+      
       if (data.status === 200) {
         setReviews(data.reviews || []);
+        console.log('Reviews set to state:', data.reviews);
       }
     } catch (error) {
       console.error('Error fetching reviews:', error);
@@ -93,16 +97,42 @@ const Dealer = () => {
           </div>
 
           <div className="reviews-section">
-            <h2>Reviews</h2>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h2>Reviews</h2>
+              {sessionStorage.getItem('username') ? (
+                <Link 
+                  to={`/postreview/${id}`} 
+                  className="btn btn-primary"
+                >
+                  Write a Review
+                </Link>
+              ) : (
+                <Link 
+                  to="/login" 
+                  className="btn btn-outline-primary"
+                >
+                  Login to Write a Review
+                </Link>
+              )}
+            </div>
+
             {reviews.length > 0 ? (
               <div className="reviews-list">
                 {reviews.map((review, index) => (
                   <div key={index} className="review-card">
                     <p className="review-text">{review.review}</p>
                     <div className="review-meta">
-                      <span>By: {review.name}</span>
-                      {review.car_make && (
-                        <span> | Car: {review.car_make} {review.car_model} {review.car_year}</span>
+                      <span className="reviewer-name">By: {review.name}</span>
+                      {review.car_make && review.car_model && (
+                        <span className="car-info">
+                          | Car: {review.car_make} {review.car_model} 
+                          {review.car_year && ` ${review.car_year}`}
+                        </span>
+                      )}
+                      {review.purchase_date && (
+                        <span className="review-date">
+                          | Purchased: {new Date(review.purchase_date).toLocaleDateString()}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -112,14 +142,6 @@ const Dealer = () => {
               <p>No reviews yet</p>
             )}
           </div>
-
-          {sessionStorage.getItem('username') && (
-            <div className="mt-4">
-              <Link to={`/dealer/${id}/review`} className="btn btn-primary">
-                Write a Review
-              </Link>
-            </div>
-          )}
         </div>
       </div>
     </div>

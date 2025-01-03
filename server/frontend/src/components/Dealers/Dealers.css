@@ -165,18 +165,31 @@ table{
   background-color: white;
   border: 1px solid #dee2e6;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1.5rem;
   margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .review-text {
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
 }
 
 .review-meta {
   color: #6c757d;
   font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reviewer-name {
+  font-weight: 500;
+}
+
+.car-info, .review-date {
+  color: #8c98a4;
 }
 
 .dealer-details-card {
