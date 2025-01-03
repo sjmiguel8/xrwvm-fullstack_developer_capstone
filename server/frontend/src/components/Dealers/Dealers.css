@@ -178,3 +178,57 @@ table{
   color: #6c757d;
   font-size: 0.9rem;
 }
+
+.dealer-details-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.dealer-title {
+  color: #2c3e50;
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.dealer-info {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.location-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.location-icon {
+  color: #007bff;
+  font-size: 1.5rem;
+  margin-top: 0.2rem;
+}
+
+.address-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.address-line {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 0.3rem;
+}
+
+.city-state {
+  font-size: 1.1rem;
+  color: #505a66;
+}
+
+.zip-code {
+  color: #6c757d;
+}

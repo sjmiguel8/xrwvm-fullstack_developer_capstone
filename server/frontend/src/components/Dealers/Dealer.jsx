@@ -74,52 +74,53 @@ const Dealer = () => {
     <div>
       <Header />
       <div className="container mt-4">
-        <h1>{dealer.full_name || dealer.name}</h1>
-        <div className="dealer-info mb-4">
-          <p>
-            {dealer.address && (
-              <span>{dealer.address}, </span>
-            )}
-            {dealer.city && (
-              <span>{dealer.city}, </span>
-            )}
-            {dealer.state && (
-              <span>{dealer.state} </span>
-            )}
-            {dealer.zip && (
-              <span>({dealer.zip})</span>
-            )}
-          </p>
-        </div>
-
-        <div className="reviews-section">
-          <h2>Reviews</h2>
-          {reviews.length > 0 ? (
-            <div className="reviews-list">
-              {reviews.map((review, index) => (
-                <div key={index} className="review-card">
-                  <p className="review-text">{review.review}</p>
-                  <div className="review-meta">
-                    <span>By: {review.name}</span>
-                    {review.car_make && (
-                      <span> | Car: {review.car_make} {review.car_model} {review.car_year}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
+        <div className="dealer-details-card">
+          <h1 className="dealer-title">{dealer.full_name || dealer.name}</h1>
+          <div className="dealer-info">
+            <div className="location-info">
+              <i className="fas fa-map-marker-alt location-icon"></i>
+              <div className="address-details">
+                {dealer.address && (
+                  <span className="address-line">{dealer.address}</span>
+                )}
+                <span className="city-state">
+                  {dealer.city && <span>{dealer.city}, </span>}
+                  {dealer.state && <span>{dealer.state} </span>}
+                  {dealer.zip && <span className="zip-code">({dealer.zip})</span>}
+                </span>
+              </div>
             </div>
-          ) : (
-            <p>No reviews yet</p>
+          </div>
+
+          <div className="reviews-section">
+            <h2>Reviews</h2>
+            {reviews.length > 0 ? (
+              <div className="reviews-list">
+                {reviews.map((review, index) => (
+                  <div key={index} className="review-card">
+                    <p className="review-text">{review.review}</p>
+                    <div className="review-meta">
+                      <span>By: {review.name}</span>
+                      {review.car_make && (
+                        <span> | Car: {review.car_make} {review.car_model} {review.car_year}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No reviews yet</p>
+            )}
+          </div>
+
+          {sessionStorage.getItem('username') && (
+            <div className="mt-4">
+              <Link to={`/dealer/${id}/review`} className="btn btn-primary">
+                Write a Review
+              </Link>
+            </div>
           )}
         </div>
-
-        {sessionStorage.getItem('username') && (
-          <div className="mt-4">
-            <Link to={`/dealer/${id}/review`} className="btn btn-primary">
-              Write a Review
-            </Link>
-          </div>
-        )}
       </div>
     </div>
   );
