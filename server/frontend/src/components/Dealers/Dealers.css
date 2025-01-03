@@ -149,3 +149,32 @@ table{
   background-color: #0056b3;
   border-color: #0056b3;
 }
+
+.dealer-info {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.reviews-section {
+  margin-top: 2rem;
+}
+
+.review-card {
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.review-text {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.review-meta {
+  color: #6c757d;
+  font-size: 0.9rem;
+}

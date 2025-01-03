@@ -1,11 +1,12 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPanel from './components/Login/Login';
+import RegisterPanel from './components/Register/Register';
 import Dealers from './components/Dealers/Dealers';
 import Dealer from './components/Dealers/Dealer';
 import Header from './components/Header/Header';
 
-// Simple components for About and Contact
+// Add these components for About and Contact pages
 const About = () => (
   <div>
     <Header />
@@ -29,27 +30,31 @@ const Contact = () => (
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Dealers />,
+    element: <Dealers />
   },
   {
     path: "/login",
-    element: <LoginPanel />,
+    element: <LoginPanel />
+  },
+  {
+    path: "/register",
+    element: <RegisterPanel />
   },
   {
     path: "/dealers",
-    element: <Dealers />,
+    element: <Dealers />
   },
   {
     path: "/dealer/:id",
-    element: <Dealer />,
+    element: <Dealer />
   },
   {
     path: "/about",
-    element: <About />,
+    element: <About />
   },
   {
     path: "/contact",
-    element: <Contact />,
+    element: <Contact />
   }
 ]);
 

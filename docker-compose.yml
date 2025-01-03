@@ -21,5 +21,29 @@ services:
       - ./server/database:/app
       - /app/node_modules
 
+  django_app:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app
+    depends_on:
+      - mongo_db
+      - express_app
+
+  react_app:
+    build:
+      context: ./server/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server/frontend:/app
+      - /app/node_modules
+    depends_on:
+      - django_app
+
 volumes:
   mongodb_data: 

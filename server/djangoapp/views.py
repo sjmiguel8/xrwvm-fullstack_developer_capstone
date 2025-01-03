@@ -36,34 +36,28 @@ def logout_request(request):
 
 @csrf_exempt
 def registration(request):
-    data = json.loads(request.body)
-    username = data['username']
-    password = data['password']
-    email = data['email']
-    first_name = data.get('firstName', '')
-    last_name = data.get('lastName', '')
-
     try:
-        User.objects.get(username=username)
-        return JsonResponse({
-            "message": "User already exists",
-            "userName": username,
-            "error": "Already Registered"
-        })
-    except User.DoesNotExist:
+        data = json.loads(request.body)
+        username = data['username']
+        password = data['password']
+        
+        # Check if user already exists
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'message': 'Username already exists'}, status=400)
+        
+        # Create user
         user = User.objects.create_user(
             username=username,
-            first_name=first_name,
-            last_name=last_name,
-            password=password,
-            email=email
+            password=password
         )
-        login(request, user)
+        
         return JsonResponse({
-            "message": "success",
-            "userName": username,
-            "status": "Authenticated"
+            'message': 'Registration successful',
+            'username': user.username
         })
+        
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=400)
 
 @csrf_exempt
 def get_dealer_reviews(request, dealer_id):
@@ -132,16 +126,25 @@ def get_dealer_by_id(request, dealer_id):
             "status": 200,
             "dealer": [{
                 "id": dealer.id,
-                "name": dealer.name,
+                "name": dealer.full_name,
                 "city": dealer.city,
                 "address": dealer.address,
-                "zip": dealer.zip_code,
+                "zip": dealer.zip,
                 "state": dealer.state,
-                "full_name": dealer.name
+                "st": dealer.st,
+                "full_name": dealer.full_name
             }]
         })
     except Dealer.DoesNotExist:
-        return JsonResponse({"status": 404, "message": "Dealer not found"})
+        return JsonResponse({
+            "status": 404,
+            "message": "Dealer not found"
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            "status": 500,
+            "message": str(e)
+        }, status=500)
 
 @csrf_exempt
 def add_review(request):
