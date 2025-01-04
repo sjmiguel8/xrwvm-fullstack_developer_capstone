@@ -160,7 +160,9 @@
                     row.onclick = () => showDealerDetails(dealer.id);
                     
                     row.innerHTML = `
-                        <td>${dealer.name}</td>
+                        <td>
+                            <a href="/dealer/${dealer.id}/">${dealer.full_name}</a>
+                        </td>
                         <td>${dealer.address}</td>
                         <td>${dealer.city}</td>
                         <td>${dealer.state}</td>

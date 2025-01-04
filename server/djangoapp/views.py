@@ -32,6 +32,30 @@ class RegisterView(TemplateView):
 class DealerDetailView(TemplateView):
     template_name = "dealer_details.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dealer_id = self.kwargs.get('id')
+        try:
+            dealer = Dealer.objects.get(id=dealer_id)
+            context['dealer'] = dealer
+            context['reviews'] = Review.objects.filter(dealership=dealer_id)
+        except Dealer.DoesNotExist:
+            context['error'] = 'Dealer not found'
+        return context
+
+class PostReviewView(TemplateView):
+    template_name = "post_review.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dealer_id = self.kwargs.get('dealer_id')
+        try:
+            dealer = Dealer.objects.get(id=dealer_id)
+            context['dealer'] = dealer
+        except Dealer.DoesNotExist:
+            context['error'] = 'Dealer not found'
+        return context
+
 # API views
 @csrf_exempt
 def login_user(request):
@@ -133,7 +157,19 @@ def add_review(request):
             car_model=data.get('car_model', ''),
             car_year=data.get('car_year', '')
         )
-        return JsonResponse({"status": 200})
+        return JsonResponse({
+            "status": 200,
+            "review": {
+                "name": review.name,
+                "dealership": review.dealership,
+                "review": review.review,
+                "purchase": review.purchase,
+                "purchase_date": review.purchase_date,
+                "car_make": review.car_make,
+                "car_model": review.car_model,
+                "car_year": review.car_year
+            }
+        })
     except Exception as e:
         return JsonResponse({"status": 500, "message": str(e)})
 
@@ -151,7 +187,8 @@ def get_dealer_by_id(request, dealer_id):
                 "zip": dealer.zip,
                 "state": dealer.state,
                 "st": dealer.st,
-                "full_name": dealer.full_name
+                "full_name": dealer.full_name,
+                "short_name": dealer.short_name
             }]
         })
     except Dealer.DoesNotExist:

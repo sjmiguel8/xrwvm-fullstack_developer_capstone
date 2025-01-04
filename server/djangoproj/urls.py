@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp.views import HomeView, AboutView, ContactView, DealersView, LoginView, RegisterView, DealerDetailView
+from djangoapp.views import HomeView, AboutView, ContactView, DealersView, LoginView, RegisterView, DealerDetailView, PostReviewView
 
 urlpatterns = [
     # Template views
@@ -27,8 +27,8 @@ urlpatterns = [
     path('dealers/', DealersView.as_view(), name='dealers'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
-    path('dealer/<int:id>/', DealerDetailView.as_view(), name='dealer'),
-    path('postreview/<int:dealer_id>', HomeView.as_view(), name='postreview'),
+    path('dealer/<int:id>/', DealerDetailView.as_view(), name='dealer_details'),
+    path('postreview/<int:dealer_id>/', PostReviewView.as_view(), name='post_review'),
     
     # API endpoints
     path('admin/', admin.site.urls),
