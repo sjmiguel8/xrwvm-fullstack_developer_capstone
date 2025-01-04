@@ -317,6 +317,28 @@
             });
         }
 
+        async function logout() {
+            try {
+                const response = await fetch('/djangoapp/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    // Clear session storage
+                    sessionStorage.removeItem('username');
+                    // Redirect to home page
+                    window.location.href = '/';
+                } else {
+                    console.error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM Content Loaded");
@@ -338,9 +360,6 @@
                     <a href="/register">Register</a>
                 `;
             }
-
-            // Make sure to call getDealers when the page loads
-            window.addEventListener('load', getDealers);
         });
     </script>
 </body>

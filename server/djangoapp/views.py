@@ -111,11 +111,11 @@ def registration(request):
 
 @csrf_exempt
 def logout_request(request):
-    logout(request)
-    return JsonResponse({
-        "status": "success",
-        "message": "Successfully logged out"
-    })
+    try:
+        logout(request)
+        return JsonResponse({"status": "success"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 @csrf_exempt
 def get_reviews(request):
