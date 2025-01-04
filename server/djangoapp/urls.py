@@ -3,8 +3,6 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
-from django.views.generic import TemplateView
-
 
 app_name = 'djangoapp'
 urlpatterns = [
@@ -24,7 +22,6 @@ urlpatterns = [
     path('dealer/<int:dealer_id>', views.get_dealer_by_id, name='dealer_by_id'),
     path('fetchDealers/<str:state>', views.get_dealers_by_state, name='dealers_by_state'),
 
-    path('about/', TemplateView.as_view(template_name='index.html')),
-    path('contact/', TemplateView.as_view(template_name='index.html')),
+    # Cars route
     path('get_cars', views.get_cars, name='get_cars'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
