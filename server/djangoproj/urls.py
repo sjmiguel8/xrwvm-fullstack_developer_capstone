@@ -15,23 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
 from djangoapp.views import HomeView, AboutView, ContactView, DealersView, LoginView, RegisterView
 
 urlpatterns = [
-    # Use the class-based views
+    # Template views
     path('', HomeView.as_view(), name='home'),
     path('about/', AboutView.as_view(), name='about'),
     path('contact/', ContactView.as_view(), name='contact'),
     path('dealers/', DealersView.as_view(), name='dealers'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
-    
-    # Keep these the same
-    path('dealer/<int:id>/', TemplateView.as_view(template_name="Home.html")),
-    path('postreview/<int:dealer_id>', TemplateView.as_view(template_name="Home.html")),
     
     # API endpoints
     path('admin/', admin.site.urls),
