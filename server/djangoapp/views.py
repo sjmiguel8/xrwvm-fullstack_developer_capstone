@@ -76,20 +76,18 @@ def get_dealers(request):
         dealers_list = []
         for dealer in dealers:
             dealers_list.append({
-                'id': dealer.id,
-                'name': dealer.full_name,
-                'city': dealer.city,
-                'state': dealer.state,
-                'address': dealer.address,
-                'zip': dealer.zip,
-                'lat': dealer.lat,
-                'long': dealer.long,
-                'short_name': dealer.short_name,
-                'st': dealer.st
+                "full_name": dealer.full_name,
+                "dealer_id": dealer.id,
+                "city": dealer.city,
+                "address": dealer.address,
+                "state": dealer.state,
+                "zip": dealer.zip,
+                "short_name": dealer.short_name
             })
         return JsonResponse(dealers_list, safe=False)
     except Exception as e:
-        return HttpResponseServerError(f"Server error: {str(e)}")
+        print(f"Error in get_dealers: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
 
 @csrf_exempt
 def registration(request):
