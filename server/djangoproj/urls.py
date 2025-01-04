@@ -15,25 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp import views as djangoapp_views
-from django.contrib.auth import views as auth_views
-from django.contrib.auth.views import LogoutView
+from djangoapp.views import HomeView, AboutView, ContactView, DealersView, LoginView, RegisterView
 
 urlpatterns = [
-    # Static pages using TemplateView
-    path('', TemplateView.as_view(template_name="index.html"), name='home'),
-    path('about/', TemplateView.as_view(template_name="index.html")),
-    path('contact/', TemplateView.as_view(template_name="index.html")),
-    
-    # React routes - all serve index.html
-    path('login/', TemplateView.as_view(template_name="index.html")),
-    path('register/', TemplateView.as_view(template_name="index.html")),
-    path('dealers/', TemplateView.as_view(template_name="index.html")),
-    path('dealer/<int:id>/', TemplateView.as_view(template_name="index.html")),
-    path('postreview/<int:dealer_id>', TemplateView.as_view(template_name="index.html")),
+    # Template views
+    path('', HomeView.as_view(), name='home'),
+    path('about/', AboutView.as_view(), name='about'),
+    path('contact/', ContactView.as_view(), name='contact'),
+    path('dealers/', DealersView.as_view(), name='dealers'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('register/', RegisterView.as_view(), name='register'),
     
     # API endpoints
     path('admin/', admin.site.urls),
