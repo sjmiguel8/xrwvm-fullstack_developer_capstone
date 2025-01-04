@@ -219,3 +219,25 @@ def get_cars(request):
         "status": 200,
         "CarModels": car_models
     })
+
+@csrf_exempt
+def get_car_makes_and_models(request):
+    try:
+        makes = CarMake.objects.all()
+        makes_data = []
+        for make in makes:
+            models = make.carmodel_set.all()
+            makes_data.append({
+                'name': make.name,
+                'description': make.description,
+                'models': [
+                    {
+                        'name': model.name,
+                        'type': model.car_type,
+                        'year': model.year
+                    } for model in models
+                ]
+            })
+        return JsonResponse({'makes': makes_data})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
