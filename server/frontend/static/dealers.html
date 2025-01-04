@@ -290,6 +290,26 @@
                 `;
             }
         });
+
+        function populateTable(dealers) {
+            const tableBody = document.getElementById('dealer-table-body');
+            tableBody.innerHTML = '';
+            
+            dealers.forEach(dealer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <a href="/dealer/${dealer.id}/">${dealer.full_name}</a>
+                    </td>
+                    <td>${dealer.city}</td>
+                    <td>${dealer.address}</td>
+                    <td>${dealer.state}</td>
+                    <td>${dealer.zip}</td>
+                    <td>${dealer.short_name}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
     </script>
 </body>
 </html> 

@@ -76,8 +76,8 @@ def get_dealers(request):
         dealers_list = []
         for dealer in dealers:
             dealers_list.append({
+                "id": dealer.id,
                 "full_name": dealer.full_name,
-                "dealer_id": dealer.id,
                 "city": dealer.city,
                 "address": dealer.address,
                 "state": dealer.state,
