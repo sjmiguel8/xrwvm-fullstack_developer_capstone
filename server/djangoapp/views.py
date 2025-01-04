@@ -15,19 +15,22 @@ class HomeView(TemplateView):
     template_name = "Home.html"
 
 class AboutView(TemplateView):
-    template_name = "Home.html"
+    template_name = "About.html"
 
 class ContactView(TemplateView):
-    template_name = "Home.html"
+    template_name = "Contact.html"
 
 class DealersView(TemplateView):
-    template_name = "Home.html"
+    template_name = "dealers.html"
 
 class LoginView(TemplateView):
-    template_name = "Home.html"
+    template_name = "login.html"
 
 class RegisterView(TemplateView):
-    template_name = "Home.html"
+    template_name = "register.html"
+
+class DealerDetailView(TemplateView):
+    template_name = "dealer_details.html"
 
 # API views
 @csrf_exempt
