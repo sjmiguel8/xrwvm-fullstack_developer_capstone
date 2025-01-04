@@ -26,3 +26,17 @@ RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/bin/bash","/app/entrypoint.sh"]
 CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "djangoproj.wsgi"] 
+
+# Create necessary directories
+RUN mkdir -p $APP/frontend/static
+RUN mkdir -p $APP/staticfiles
+
+# Copy all files
+COPY . $APP/
+
+# Set permissions
+RUN chmod +x /app/entrypoint.sh
+RUN chown -R www-data:www-data $APP
+
+# Collect static files during build
+RUN python manage.py collectstatic --noinput 

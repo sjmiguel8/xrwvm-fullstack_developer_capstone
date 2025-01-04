@@ -27,6 +27,8 @@ urlpatterns = [
     path('dealers/', DealersView.as_view(), name='dealers'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('dealer/<int:id>/', HomeView.as_view(), name='dealer'),
+    path('postreview/<int:dealer_id>', HomeView.as_view(), name='postreview'),
     
     # API endpoints
     path('admin/', admin.site.urls),
