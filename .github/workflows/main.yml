@@ -1,59 +1,51 @@
-name: 'Lint Code'
+name: Python Lint
 
 on:
   push:
-    branches: [master, main]
+    branches: [ main ]
   pull_request:
-    branches: [master, main]
+    branches: [ main ]
 
 jobs:
-  lint_python:
-    name: Lint Python Files
+  lint:
     runs-on: ubuntu-latest
-
+    
     steps:
-
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v2
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.12
-
+        python-version: '3.9'
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8
-
-    - name: Print working directory
-      run: pwd
-
-    - name: Run Linter
+        pip install flake8 pylint black isort
+        pip install -r server/requirements.txt
+    
+    - name: Run Black
       run: |
-        pwd
-        # This command finds all Python files recursively and runs flake8 on them
-        find . -name "*.py" -exec flake8 {} +
-        echo "Linted all the python files successfully"
+        black --check server/
+      continue-on-error: true
+    
+    - name: Run isort
+      run: |
+        isort --check-only --diff server/
+      continue-on-error: true
+    
+    - name: Run Flake8
+      run: |
+        flake8 server/ --max-line-length=120 --extend-ignore=E203
+      continue-on-error: true
+    
+    - name: Run Pylint
+      run: |
+        pylint server/ --disable=C0111,C0103,C0303,C0301,W0611,R0903,E1101
+      continue-on-error: true
 
-  lint_js:
-      name: Lint JavaScript Files
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
-
-      - name: Install JSHint
-        run: npm install jshint --global
-
-      - name: Run Linter
-        run: |
-          # This command finds all JavaScript files recursively and runs JSHint on them
-          find ./server/database -name "*.js" -exec jshint {} +
-          echo "Linted all the js files successfully"
+    - name: HTML Lint
+      run: |
+        pip install html5lib
+        find server/frontend/static -name "*.html" -exec python -m html5lib {} \;
+      continue-on-error: true

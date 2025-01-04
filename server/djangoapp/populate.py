@@ -1,5 +1,7 @@
 from django.utils import timezone
+
 from .models import CarMake, CarModel
+
 
 def initiate():
     # Create car makes

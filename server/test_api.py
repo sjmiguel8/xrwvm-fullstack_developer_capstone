@@ -1,5 +1,6 @@
 import requests
 
+
 def test_reviews_endpoint():
     # Test getting all reviews
     response = requests.get('http://127.0.0.1:8000/djangoapp/reviews/')

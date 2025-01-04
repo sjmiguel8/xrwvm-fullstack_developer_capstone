@@ -1,5 +1,6 @@
 import requests
 
+
 def test_proxy_services():
     base_url = "http://127.0.0.1:8000/djangoapp"
     

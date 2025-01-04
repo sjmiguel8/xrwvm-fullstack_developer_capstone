@@ -1,19 +1,22 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponseServerError
-from django.contrib.auth import login, authenticate, logout
+import json
+import logging
+
+import requests
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.http import HttpResponseServerError, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
-from .models import Review, Dealer
-from .restapis import get_request, analyze_review_sentiments, post_review, get_dealers_from_cf
-from .models import CarMake, CarModel
-import logging
-import json
-import requests
+
+from .models import CarMake, CarModel, Dealer, Review
+from .restapis import (analyze_review_sentiments, get_dealers_from_cf,
+                       get_request, post_review)
 
 
 # Template views
 class HomeView(TemplateView):
+    """View for the home page."""
     template_name = "Home.html"
 
 class AboutView(TemplateView):

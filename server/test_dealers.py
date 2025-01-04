@@ -1,5 +1,6 @@
 import requests
 
+
 def test_dealers():
     print("\nTesting Dealers API:")
     response = requests.get('http://localhost:8000/djangoapp/fetchDealers')

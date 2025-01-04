@@ -1,13 +1,15 @@
-import os
-import django
 import json
+import os
 from pathlib import Path
+
+import django
 
 # Set up Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoproj.settings')
 django.setup()
 
 from djangoapp.models import Dealer, Review
+
 
 def load_dealers():
     # Get the path to dealerships.json
