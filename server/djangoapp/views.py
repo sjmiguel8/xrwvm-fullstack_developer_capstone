@@ -6,9 +6,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from .models import Review, Dealer
 from .restapis import get_request, analyze_review_sentiments, post_review, get_dealers_from_cf
+from .models import CarMake, CarModel
 import logging
 import json
 import requests
+
 
 # Template views
 class HomeView(TemplateView):
