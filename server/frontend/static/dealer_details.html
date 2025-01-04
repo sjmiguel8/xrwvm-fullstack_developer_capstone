@@ -79,7 +79,9 @@
         <div class="reviews-section">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3>Customer Reviews</h3>
-                <button class="btn btn-primary" onclick="showAddReviewForm()">Write a Review</button>
+                <div id="reviewButtonContainer">
+                    <!-- This will be populated by JavaScript -->
+                </div>
             </div>
             <div id="reviewsList">
                 <!-- Reviews will be populated here -->
@@ -136,19 +138,21 @@
 
         async function loadDealerDetails() {
             dealerId = getDealerId();
+            console.log('Loading details for dealer:', dealerId);
             try {
                 const response = await fetch(`/djangoapp/dealer/${dealerId}`);
                 const data = await response.json();
+                console.log('Dealer data:', data);
                 
-                if (data.status === 200) {
+                if (data.status === 200 && data.dealer && data.dealer.length > 0) {
                     const dealer = data.dealer[0];
-                    document.getElementById('dealerName').textContent = dealer.name;
+                    document.getElementById('dealerName').textContent = dealer.full_name;
                     document.getElementById('dealerDetails').innerHTML = `
                         <p><strong>Address:</strong> ${dealer.address}</p>
-                        <p><strong>City:</strong> ${dealer.city}</p>
-                        <p><strong>State:</strong> ${dealer.state}</p>
-                        <p><strong>Zip:</strong> ${dealer.zip}</p>
+                        <p><strong>City:</strong> ${dealer.city}, ${dealer.state} ${dealer.zip}</p>
                     `;
+                    
+                    // Load reviews after dealer details are loaded
                     loadDealerReviews();
                 }
             } catch (error) {
@@ -158,34 +162,38 @@
 
         async function loadDealerReviews() {
             try {
+                console.log('Loading reviews for dealer:', dealerId);
                 const response = await fetch(`/djangoapp/fetchReviews/dealer/${dealerId}`);
                 const data = await response.json();
+                console.log('Review data:', data);
                 
                 if (data.status === 200) {
                     const reviewsList = document.getElementById('reviewsList');
                     reviewsList.innerHTML = '';
                     
-                    data.reviews.forEach(review => {
-                        const reviewCard = document.createElement('div');
-                        reviewCard.className = 'review-card';
-                        reviewCard.innerHTML = `
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-person-circle sentiment-icon"></i>
-                                <div>
-                                    <h5 class="mb-0">${review.name}</h5>
-                                    <small class="text-muted">
-                                        ${new Date(review.purchase_date).toLocaleDateString()}
-                                    </small>
+                    if (data.reviews && data.reviews.length > 0) {
+                        data.reviews.forEach(review => {
+                            console.log('Processing review:', review);
+                            const reviewElement = document.createElement('div');
+                            reviewElement.className = 'review-card';
+                            reviewElement.innerHTML = `
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-person-circle me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">${review.name}</h5>
+                                        <p class="mb-1">${review.review}</p>
+                                        <div class="text-muted small">
+                                            ${review.car_make ? `Car: ${review.car_make} ${review.car_model} ${review.car_year}` : ''}
+                                            ${review.purchase_date ? `<br>Purchase Date: ${new Date(review.purchase_date).toLocaleDateString()}` : ''}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <p>${review.review}</p>
-                            <div class="text-muted">
-                                ${review.car_make ? `Car: ${review.car_make} ${review.car_model} ${review.car_year}` : ''}
-                                ${review.purchase ? '- Purchased' : ''}
-                            </div>
-                        `;
-                        reviewsList.appendChild(reviewCard);
-                    });
+                            `;
+                            reviewsList.appendChild(reviewElement);
+                        });
+                    } else {
+                        reviewsList.innerHTML = '<p>No reviews yet</p>';
+                    }
                 }
             } catch (error) {
                 console.error('Error loading reviews:', error);
@@ -233,9 +241,29 @@
             }
         }
 
+        function updateReviewButton() {
+            const username = sessionStorage.getItem('username');
+            const container = document.getElementById('reviewButtonContainer');
+            
+            if (username) {
+                container.innerHTML = `
+                    <a href="/postreview/${dealerId}" class="btn btn-primary">
+                        Write a Review
+                    </a>
+                `;
+            } else {
+                container.innerHTML = `
+                    <a href="/login" class="btn btn-outline-primary">
+                        Login to Write a Review
+                    </a>
+                `;
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadDealerDetails();
+            updateReviewButton();
             
             // Check login status
             const username = sessionStorage.getItem('username');

@@ -38,15 +38,16 @@ class CarModel(models.Model):
         return f"{self.car_make.name} {self.name} ({self.year})"
         
 class Dealer(models.Model):
-    full_name = models.CharField(max_length=100)
+    id = models.IntegerField(primary_key=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    address = models.CharField(max_length=200)
-    zip = models.CharField(max_length=10)
-    lat = models.FloatField()
-    long = models.FloatField()
-    short_name = models.CharField(max_length=50)
     st = models.CharField(max_length=10)
+    address = models.CharField(max_length=100)
+    zip = models.CharField(max_length=10)
+    lat = models.CharField(max_length=50)
+    long = models.CharField(max_length=50)
+    short_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.full_name
@@ -57,9 +58,9 @@ class Review(models.Model):
     review = models.TextField()
     purchase = models.BooleanField(default=True)
     purchase_date = models.DateField()
-    car_make = models.CharField(max_length=100)
-    car_model = models.CharField(max_length=100)
-    car_year = models.CharField(max_length=4)
+    car_make = models.CharField(max_length=100, blank=True)
+    car_model = models.CharField(max_length=100, blank=True)
+    car_year = models.IntegerField(null=True, blank=True)
     
     class Meta:
         ordering = ['-purchase_date']  # Show newest reviews first
