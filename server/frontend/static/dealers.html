@@ -76,6 +76,17 @@
 
     <div class="dealers-container">
         <h2 class="mb-4">Our Dealers</h2>
+        <div class="mb-3">
+            <label for="filterSelect" class="form-label">Filter by:</label>
+            <select class="form-select" id="filterSelect" onchange="updateFilter()">
+                <option value="all">All</option>
+                <option value="state">State</option>
+                <option value="city">City</option>
+                <option value="id">Dealer ID</option>
+            </select>
+            <input type="text" class="form-control mt-2" id="filterValue" 
+                   placeholder="Enter filter value..." onkeyup="updateFilter()">
+        </div>
         <table class="table table-hover">
             <thead class="table-dark">
                 <tr>
@@ -309,6 +320,39 @@
                 `;
                 tableBody.appendChild(row);
             });
+
+            // Reapply any existing filter
+            updateFilter();
+        }
+
+        function updateFilter() {
+            const filterType = document.getElementById('filterSelect').value;
+            const filterValue = document.getElementById('filterValue').value.toLowerCase();
+            const rows = document.getElementById('dealer-table-body').getElementsByTagName('tr');
+
+            for (let row of rows) {
+                let text = '';
+                let show = true;
+
+                if (filterType === 'all') {
+                    text = row.textContent.toLowerCase();
+                    show = text.includes(filterValue);
+                } else {
+                    // Map filter types to column indices
+                    const columnMap = {
+                        'state': 3,  // Adjust these indices based on your table structure
+                        'city': 1,
+                        'id': 0
+                    };
+                    const cell = row.cells[columnMap[filterType]];
+                    if (cell) {
+                        text = cell.textContent.toLowerCase();
+                        show = text.includes(filterValue);
+                    }
+                }
+
+                row.style.display = show ? '' : 'none';
+            }
         }
     </script>
 </body>
