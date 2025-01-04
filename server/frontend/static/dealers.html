@@ -303,21 +303,25 @@
         });
 
         function populateTable(dealers) {
-            const tableBody = document.getElementById('dealer-table-body');
+            const tableBody = document.getElementById('dealersTableBody');
             tableBody.innerHTML = '';
             
             dealers.forEach(dealer => {
                 const row = document.createElement('tr');
+                row.className = 'dealer-row';
+                row.onclick = () => showDealerDetails(dealer.id);
+                
                 row.innerHTML = `
                     <td>
                         <a href="/dealer/${dealer.id}/">${dealer.full_name}</a>
                     </td>
-                    <td>${dealer.city}</td>
                     <td>${dealer.address}</td>
+                    <td>${dealer.city}</td>
                     <td>${dealer.state}</td>
                     <td>${dealer.zip}</td>
-                    <td>${dealer.short_name}</td>
+                    <td><i class="bi bi-star-fill"></i> 4.5</td>
                 `;
+                
                 tableBody.appendChild(row);
             });
 
@@ -328,7 +332,7 @@
         function updateFilter() {
             const filterType = document.getElementById('filterSelect').value;
             const filterValue = document.getElementById('filterValue').value.toLowerCase();
-            const rows = document.getElementById('dealer-table-body').getElementsByTagName('tr');
+            const rows = document.getElementById('dealersTableBody').getElementsByTagName('tr');
 
             for (let row of rows) {
                 let text = '';
@@ -340,8 +344,8 @@
                 } else {
                     // Map filter types to column indices
                     const columnMap = {
-                        'state': 3,  // Adjust these indices based on your table structure
-                        'city': 1,
+                        'state': 3,  // Dealer Name, Address, City, State, Zip, Rating
+                        'city': 2,
                         'id': 0
                     };
                     const cell = row.cells[columnMap[filterType]];
