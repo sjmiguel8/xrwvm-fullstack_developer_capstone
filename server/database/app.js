@@ -7,47 +7,21 @@ const port = 3030;
 
 app.use(cors())
 
-const dealershipData = require('./data/dealerships.json');
-const reviewData = require('./data/reviews.json');
-const carData = require('./data/car_records.json');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-
-
-const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27019/dealershipsDB";
+const mongoURI = process.env.MONGODB_URI || "mongodb+srv://bonillamiguele:tigerwolf123m@cars.rag0y.mongodb.net/dealershipsDB?retryWrites=true&w=majority";
 mongoose.connect(mongoURI, {
-  serverSelectionTimeoutMS: 5000,
-  retryWrites: true
+  serverSelectionTimeoutMS: 30000
 }).then(() => {
   console.log('Connected to MongoDB');
 }).catch(err => {
   console.error('MongoDB connection error:', err);
 });
 
-
 const Reviews = require('./review');
 const Dealerships = require('./dealership');
 const Cars = require('./car');
-
-Reviews.deleteMany({}).then(()=>{
-  Reviews.insertMany(reviewData['reviews']);
-}).catch(error => {
-  console.error('Error inserting reviews:', error);
-});
-
-Dealerships.deleteMany({}).then(()=>{
-  Dealerships.insertMany(dealershipData['dealerships']);
-}).catch(error => {
-  console.error('Error inserting dealerships:', error);
-});
-
-Cars.deleteMany({}).then(()=>{
-  Cars.insertMany(carData['cars']);
-}).catch(error => {
-  console.error('Error inserting cars:', error);
-});
-
 
 // Express route to home
 app.get('/', async (req, res) => {
@@ -124,22 +98,22 @@ app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
   let new_id = documents[0]['id']+1
 
   const review = new Reviews({
-		"id": new_id,
-		"name": data['name'],
-		"dealership": data['dealership'],
-		"review": data['review'],
-		"purchase": data['purchase'],
-		"purchase_date": data['purchase_date'],
-		"car_make": data['car_make'],
-		"car_model": data['car_model'],
-		"car_year": data['car_year'],
-	});
+    "id": new_id,
+    "name": data['name'],
+    "dealership": data['dealership'],
+    "review": data['review'],
+    "purchase": data['purchase'],
+    "purchase_date": data['purchase_date'],
+    "car_make": data['car_make'],
+    "car_model": data['car_model'],
+    "car_year": data['car_year'],
+  });
 
   try {
     const savedReview = await review.save();
     res.json(savedReview);
   } catch (error) {
-		console.log(error);
+    console.log(error);
     res.status(500).json({ error: 'Error inserting review' });
   }
 });

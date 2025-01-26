@@ -20,10 +20,21 @@ backend:
         - npm install
     build:
       commands:
-        - echo "MONGODB_URI=${MONGODB_URI}" >> .env
         - npm run build
+    postBuild:
+      commands:
+        - export PORT=8080
+        - node app.js
   artifacts:
     baseDirectory: server/database
     files:
-      - '**/*'
-    discard-paths: yes
+      - app.js
+      - package.json
+      - review.js
+      - dealership.js
+      - car.js
+      - node_modules/**/*
+    discard-paths: no
+  cache:
+    paths:
+      - node_modules/**/*
