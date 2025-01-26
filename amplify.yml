@@ -20,13 +20,11 @@ backend:
         - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         - nvm install 18.19.0
         - nvm use 18.19.0
-        - rm -rf node_modules
-        - rm package-lock.json
         - cd server/database
-        - npm install
+        - npm ci
     build:
       commands:
-        - cd ../..
+        - echo "MONGODB_URI=${MONGODB_URI}" >> .env
         - npm run build
     postBuild:
       commands:
@@ -35,12 +33,7 @@ backend:
   artifacts:
     baseDirectory: server/database
     files:
-      - app.js
-      - package.json
-      - review.js
-      - dealership.js
-      - car.js
-      - node_modules/**/*
+      - '**/*'
     discard-paths: no
   cache:
     paths:
