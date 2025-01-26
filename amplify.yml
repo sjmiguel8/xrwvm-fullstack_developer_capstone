@@ -26,6 +26,7 @@ backend:
         - npm install
     build:
       commands:
+        - cd ../..
         - npm run build
     postBuild:
       commands:
