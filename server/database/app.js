@@ -10,7 +10,7 @@ app.use(cors())
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-const mongoURI = process.env.MONGODB_URI || "mongodb+srv://bonillamiguele:tigerwolf123m@cars.rag0y.mongodb.net/dealershipsDB?retryWrites=true&w=majority";
+const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI, {
   serverSelectionTimeoutMS: 30000
 }).then(() => {
