@@ -17,6 +17,7 @@ backend:
     preBuild:
       commands:
         - cd server/database
+        - node -v
         - npm ci
     build:
       commands:
