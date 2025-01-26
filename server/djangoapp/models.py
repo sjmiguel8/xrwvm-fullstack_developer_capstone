@@ -1,9 +1,10 @@
 # Uncomment the following imports before adding the Model code
 
-from django.db import models
-from django.utils.timezone import now
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.utils import timezone
+from django.utils.timezone import now
+
 
 class CarMake(models.Model):
     name = models.CharField(max_length=100)
@@ -41,12 +42,12 @@ class Dealer(models.Model):
     id = models.IntegerField(primary_key=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    st = models.CharField(max_length=2)  # State abbreviation
+    st = models.CharField(max_length=10)
     address = models.CharField(max_length=100)
     zip = models.CharField(max_length=10)
-    lat = models.FloatField(default=0.0)
-    long = models.FloatField(default=0.0)
-    short_name = models.CharField(max_length=100, default='')
+    lat = models.CharField(max_length=50)
+    long = models.CharField(max_length=50)
+    short_name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -57,10 +58,10 @@ class Review(models.Model):
     dealership = models.IntegerField()
     review = models.TextField()
     purchase = models.BooleanField(default=True)
-    purchase_date = models.DateField(default=timezone.now)
-    car_make = models.CharField(max_length=100, blank=True, null=True)
-    car_model = models.CharField(max_length=100, blank=True, null=True)
-    car_year = models.CharField(max_length=4, blank=True, null=True)
+    purchase_date = models.DateField()
+    car_make = models.CharField(max_length=100, blank=True)
+    car_model = models.CharField(max_length=100, blank=True)
+    car_year = models.IntegerField(null=True, blank=True)
     
     class Meta:
         ordering = ['-purchase_date']  # Show newest reviews first

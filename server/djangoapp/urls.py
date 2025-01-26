@@ -1,13 +1,10 @@
-# Uncomment the imports before you add the code
 from django.urls import path
-from django.conf.urls.static import static
-from django.conf import settings
-from . import views
-from django.views.generic import TemplateView
 
+from . import views
 
 app_name = 'djangoapp'
 urlpatterns = [
+<<<<<<< HEAD
     # Authentication routes - handle the actual authentication logic
     path('', TemplateView.as_view(template_name='Home.html')),
     path('register', views.registration, name='register_submit'),
@@ -29,3 +26,16 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name='index.html')),
     path('get_cars', views.get_cars, name='get_cars'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+=======
+    # API endpoints
+    path('get_dealers/', views.get_dealers, name='get_dealers'),
+    path('dealer/<int:dealer_id>', views.get_dealer_by_id, name='get_dealer'),
+    path('fetchReviews/dealer/<int:dealer_id>', views.get_dealer_reviews, name='get_reviews'),
+    path('add_review', views.add_review, name='add_review'),
+    path('login', views.login_user, name='login'),
+    path('logout', views.logout_request, name='logout'),
+    path('register', views.registration, name='register'),
+    path(route='get_cars', view=views.get_cars, name ='getcars'),
+    path('get_car_makes', views.get_car_makes_and_models, name='get_car_makes'),
+]
+>>>>>>> 5640e36cdccbbac143706c3b2726d6031e25c264

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dealer Details - Car Dealership</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .navbar {
+            background-color: darkturquoise;
+            height: 1in;
+        }
+        .nav-link {
+            font-size: larger;
+        }
+        .dealer-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dealer-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .review-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        .sentiment-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .positive { color: green; }
+        .neutral { color: gray; }
+        .negative { color: red; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <h2>Dealerships</h2>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact Us</a>
+                    </li>
+                </ul>
+                <div class="navbar-text" id="loginlogout">
+                    <!-- Login/Logout will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dealer-container">
+        <div class="dealer-info">
+            <h2 id="dealerName">Loading dealer information...</h2>
+            <div id="dealerDetails">
+                <!-- Dealer details will be populated here -->
+            </div>
+        </div>
+
+        <div class="reviews-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3>Customer Reviews</h3>
+                <div id="reviewButtonContainer">
+                    <!-- This will be populated by JavaScript -->
+                </div>
+            </div>
+            <div id="reviewsList">
+                <!-- Reviews will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Review Modal -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Write a Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reviewForm">
+                        <div class="mb-3">
+                            <label class="form-label">Your Review</label>
+                            <textarea class="form-control" id="reviewText" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Did you purchase a car?</label>
+                            <select class="form-select" id="purchaseExperience">
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Car Details (if purchased)</label>
+                            <input type="text" class="form-control mb-2" id="carMake" placeholder="Make">
+                            <input type="text" class="form-control mb-2" id="carModel" placeholder="Model">
+                            <input type="text" class="form-control" id="carYear" placeholder="Year">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Dealer ID</th>
+                <th>City</th>
+                <th>Address</th>
+                <th>State</th>
+                <th>Zip</th>
+                <th>Short Name</th>
+            </tr>
+        </thead>
+        <tbody id="dealer-table-body">
+            <!-- Dealer data will be populated here -->
+        </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let dealerId = null;
+        const reviewModal = new bootstrap.Modal(document.getElementById('addReviewModal'));
+
+        function getDealerId() {
+            const urlParts = window.location.pathname.split('/');
+            return urlParts[urlParts.indexOf('dealer') + 1];
+        }
+
+        async function loadDealerDetails() {
+            dealerId = getDealerId();
+            console.log('Loading details for dealer:', dealerId);
+            try {
+                const response = await fetch(`/djangoapp/dealer/${dealerId}`);
+                const data = await response.json();
+                console.log('Dealer data:', data);
+                
+                if (data.status === 200 && data.dealer && data.dealer.length > 0) {
+                    const dealer = data.dealer[0];
+                    document.getElementById('dealerName').textContent = dealer.full_name;
+                    document.getElementById('dealerDetails').innerHTML = `
+                        <p><strong>Address:</strong> ${dealer.address}</p>
+                        <p><strong>City:</strong> ${dealer.city}, ${dealer.state} ${dealer.zip}</p>
+                    `;
+                    
+                    // Load reviews after dealer details are loaded
+                    loadDealerReviews();
+                }
+            } catch (error) {
+                console.error('Error loading dealer details:', error);
+            }
+        }
+
+        async function loadDealerReviews() {
+            try {
+                console.log('Loading reviews for dealer:', dealerId);
+                const response = await fetch(`/djangoapp/fetchReviews/dealer/${dealerId}`);
+                const data = await response.json();
+                console.log('Review data:', data);
+                
+                if (data.status === 200) {
+                    const reviewsList = document.getElementById('reviewsList');
+                    reviewsList.innerHTML = '';
+                    
+                    if (data.reviews && data.reviews.length > 0) {
+                        data.reviews.forEach(review => {
+                            console.log('Processing review:', review);
+                            const reviewElement = document.createElement('div');
+                            reviewElement.className = 'review-card';
+                            reviewElement.innerHTML = `
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-person-circle me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">${review.name}</h5>
+                                        <p class="mb-1">${review.review}</p>
+                                        <div class="text-muted small">
+                                            ${review.car_make ? `Car: ${review.car_make} ${review.car_model} ${review.car_year}` : ''}
+                                            ${review.purchase_date ? `<br>Purchase Date: ${new Date(review.purchase_date).toLocaleDateString()}` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            reviewsList.appendChild(reviewElement);
+                        });
+                    } else {
+                        reviewsList.innerHTML = '<p>No reviews yet</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+
+        function showAddReviewForm() {
+            const username = sessionStorage.getItem('username');
+            if (!username) {
+                alert('Please login to write a review');
+                window.location.href = '/login';
+                return;
+            }
+            reviewModal.show();
+        }
+
+        async function submitReview() {
+            const reviewData = {
+                name: sessionStorage.getItem('username'),
+                dealership: dealerId,
+                review: document.getElementById('reviewText').value,
+                purchase: document.getElementById('purchaseExperience').value === 'true',
+                car_make: document.getElementById('carMake').value,
+                car_model: document.getElementById('carModel').value,
+                car_year: document.getElementById('carYear').value,
+                purchase_date: new Date().toISOString().split('T')[0]
+            };
+
+            try {
+                const response = await fetch('/djangoapp/add_review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reviewData)
+                });
+
+                if (response.ok) {
+                    reviewModal.hide();
+                    loadDealerReviews();
+                    document.getElementById('reviewForm').reset();
+                }
+            } catch (error) {
+                console.error('Error submitting review:', error);
+            }
+        }
+
+        function updateReviewButton() {
+            const username = sessionStorage.getItem('username');
+            const container = document.getElementById('reviewButtonContainer');
+            
+            if (username) {
+                container.innerHTML = `
+                    <a href="/postreview/${dealerId}" class="btn btn-primary">
+                        Write a Review
+                    </a>
+                `;
+            } else {
+                container.innerHTML = `
+                    <a href="/login" class="btn btn-outline-primary">
+                        Login to Write a Review
+                    </a>
+                `;
+            }
+        }
+
+        async function getDealers() {
+            try {
+                console.log("Starting getDealers function");
+                const response = await fetch('/djangoapp/get_dealers/', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                console.log("Response status:", response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Dealer data received:", data);
+                populateTable(data);
+            } catch (error) {
+                console.error('Error fetching dealers:', error);
+            }
+        }
+
+        function populateTable(dealers) {
+            const tableBody = document.getElementById('dealer-table-body');
+            tableBody.innerHTML = '';
+            
+            dealers.forEach(dealer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${dealer.full_name}</td>
+                    <td>${dealer.dealer_id}</td>
+                    <td>${dealer.city}</td>
+                    <td>${dealer.address}</td>
+                    <td>${dealer.state}</td>
+                    <td>${dealer.zip}</td>
+                    <td>${dealer.short_name}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function logout() {
+            // Add confirmation popup
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    const response = await fetch('/djangoapp/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (response.ok) {
+                        sessionStorage.removeItem('username');
+                        alert('Successfully logged out!');  // Success message
+                        window.location.href = '/';
+                    } else {
+                        console.error('Logout failed');
+                    }
+                } catch (error) {
+                    console.error('Error during logout:', error);
+                }
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Content Loaded");
+            loadDealerDetails();
+            updateReviewButton();
+            
+            // Check login status
+            const username = sessionStorage.getItem('username');
+            const loginlogout = document.getElementById('loginlogout');
+            if (username) {
+                loginlogout.innerHTML = `
+                    <span class="me-2">${username}</span>
+                    <a href="#" onclick="logout()">Logout</a>
+                `;
+            } else {
+                loginlogout.innerHTML = `
+                    <a href="/login">Login</a>
+                    <span class="mx-2">|</span>
+                    <a href="/register">Register</a>
+                `;
+            }
+        });
+    </script>
+</body>
+</html> 

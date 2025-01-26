@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,9 +28,15 @@ SECRET_KEY =\
 DEBUG = True
 
 ALLOWED_HOSTS = [
+<<<<<<< HEAD
     'localhost', 
     '127.0.0.1',
     'bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-south-0.proxy.cognitiveclass.ai'
+=======
+    'bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-south-0.proxy.cognitiveclass.ai',  # IBM Cloud URL
+    '*.proxy.cognitiveclass.ai',  # Allow any subdomain on cognitiveclass.ai
+    '*'  # Keep wildcard for flexibility
+>>>>>>> 5640e36cdccbbac143706c3b2726d6031e25c264
 ]
 CSRF_TRUSTED_ORIGINS = ['https://bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-south-0.proxy.cognitiveclass.ai']
 
@@ -134,6 +139,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend/static'),
+]
+
+# Make sure these directories exist
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -142,7 +152,24 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/static'),
-]
+# Add or update these settings
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Add these settings for better error reporting
+DEBUG = True
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
