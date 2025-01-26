@@ -15,8 +15,11 @@ app.use(bodyParser.json());
 
 
 
-const mongoURI = process.env.MONGODB_URI || "mongodb://mongo_db:27017/dealershipsDB";
-mongoose.connect(mongoURI).then(() => {
+const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27019/dealershipsDB";
+mongoose.connect(mongoURI, {
+  serverSelectionTimeoutMS: 5000,
+  retryWrites: true
+}).then(() => {
   console.log('Connected to MongoDB');
 }).catch(err => {
   console.error('MongoDB connection error:', err);
