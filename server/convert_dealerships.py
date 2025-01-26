@@ -22,9 +22,7 @@ for dealer in data['dealerships']:
             "full_name": dealer['full_name']
         }
     })
-
+    
 # Write the fixture file
 with open('djangoapp/fixtures/initial_data.json', 'w') as f:
-    json.dump(fixtures, f, indent=2)
-
-# The JavaScript code has been moved to a separate file.
+    json.dump(fixtures, f, indent=2) 

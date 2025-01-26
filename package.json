@@ -1,12 +1,19 @@
 {
-  "name": "xrwvm-fullstack_developer_capstone",
+  "name": "dealership-monorepo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "server/frontend",
+    "server/database"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd server/frontend && npm install && npm run build",
-    "start": "cd server/frontend && npm start"
+    "build:frontend": "cd server/frontend && npm run build",
+    "build:backend": "cd server/database && npm run build",
+    "build": "npm run build:frontend && npm run build:backend",
+    "start": "cd server/database && npm start"
   },
   "keywords": [],
   "author": "",
