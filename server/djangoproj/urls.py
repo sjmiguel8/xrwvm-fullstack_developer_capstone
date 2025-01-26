@@ -25,7 +25,8 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
     # Static pages using TemplateView
     path('', TemplateView.as_view(template_name="index.html"), name='home'),
-    path('about/', TemplateView.as_view(template_name="index.html")),
+    path('index/', TemplateView.as_view(template_name="index.html"), name='index'),
+    path('about/', TemplateView.as_view(template_name="About.html")),
     path('contact/', TemplateView.as_view(template_name="index.html")),
     
     # React routes - all serve index.html

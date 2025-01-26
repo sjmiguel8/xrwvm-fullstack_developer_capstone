@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 app_name = 'djangoapp'
 urlpatterns = [
     # Authentication routes - handle the actual authentication logic
+    path('', TemplateView.as_view(template_name='Home.html')),
     path('register', views.registration, name='register_submit'),
     path('login', views.login_user, name='login_submit'),
     path('logout/', views.logout_request, name='logout'),
@@ -24,7 +25,7 @@ urlpatterns = [
     path('dealer/<int:dealer_id>', views.get_dealer_by_id, name='dealer_by_id'),
     path('fetchDealers/<str:state>', views.get_dealers_by_state, name='dealers_by_state'),
 
-    path('about/', TemplateView.as_view(template_name='index.html')),
+    path('about/', TemplateView.as_view(template_name='About.html')),
     path('contact/', TemplateView.as_view(template_name='index.html')),
     path('get_cars', views.get_cars, name='get_cars'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

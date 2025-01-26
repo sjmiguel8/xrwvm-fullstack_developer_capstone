@@ -11,7 +11,7 @@ function Header() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: 'darkturquoise' }}>
+    <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: 'rgb(0, 0, 0)' }}>
       <div className="container-fluid">
         <h2 className="navbar-brand mb-0" style={{ fontSize: '24px', marginRight: '3rem' }}>Dealerships</h2>
         <button 

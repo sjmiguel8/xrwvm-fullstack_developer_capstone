@@ -31,9 +31,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1',
-    'https://bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai'
+    'bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-south-0.proxy.cognitiveclass.ai'
 ]
-CSRF_TRUSTED_ORIGINS = ['https://bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai']
+CSRF_TRUSTED_ORIGINS = ['https://bonillamigue-8000.theianext-0-labs-prod-misc-tools-us-south-0.proxy.cognitiveclass.ai']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [],
@@ -67,6 +67,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'frontend/static'),
+            os.path.join(BASE_DIR, 'djangoapp/templates'),
+            os.path.join(BASE_DIR, 'djangoapp/templates/djangoapp'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -75,7 +77,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.static',
             ],
         },
     },

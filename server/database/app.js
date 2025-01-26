@@ -1,20 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
-const  cors = require('cors')
+const cors = require('cors')
 const app = express()
 const port = 3030;
 
 app.use(cors())
-app.use(require('body-parser').urlencoded({ extended: false }));
 
-const reviews_data = JSON.parse(fs.readFileSync("data/reviews.json", 'utf8'));
-const dealerships_data = JSON.parse(fs.readFileSync("data/dealerships.json", 'utf8'));
+const dealershipData = require('./data/dealerships.json');
+const reviewData = require('./data/reviews.json');
+const carData = require('./data/car_records.json');
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
-mongoose.connect("mongodb://mongo_db:27017/dealershipsDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
+
+
+const mongoURI = process.env.MONGODB_URI || "mongodb://mongo_db:27017/dealershipsDB";
+mongoose.connect(mongoURI).then(() => {
   console.log('Connected to MongoDB');
 }).catch(err => {
   console.error('MongoDB connection error:', err);
@@ -22,20 +24,26 @@ mongoose.connect("mongodb://mongo_db:27017/dealershipsDB", {
 
 
 const Reviews = require('./review');
-
 const Dealerships = require('./dealership');
+const Cars = require('./car');
 
-try {
-  Reviews.deleteMany({}).then(()=>{
-    Reviews.insertMany(reviews_data['reviews']);
-  });
-  Dealerships.deleteMany({}).then(()=>{
-    Dealerships.insertMany(dealerships_data['dealerships']);
-  });
-  
-} catch (error) {
-  res.status(500).json({ error: 'Error fetching documents' });
-}
+Reviews.deleteMany({}).then(()=>{
+  Reviews.insertMany(reviewData['reviews']);
+}).catch(error => {
+  console.error('Error inserting reviews:', error);
+});
+
+Dealerships.deleteMany({}).then(()=>{
+  Dealerships.insertMany(dealershipData['dealerships']);
+}).catch(error => {
+  console.error('Error inserting dealerships:', error);
+});
+
+Cars.deleteMany({}).then(()=>{
+  Cars.insertMany(carData['cars']);
+}).catch(error => {
+  console.error('Error inserting cars:', error);
+});
 
 
 // Express route to home
@@ -93,6 +101,16 @@ app.get('/fetchDealer/:id', async (req, res) => {
     res.json(document);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching dealer' });
+  }
+});
+
+// Express route to fetch all cars
+app.get('/fetchCars', async (req, res) => {
+  try {
+    const documents = await Cars.find();
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching cars' });
   }
 });
 

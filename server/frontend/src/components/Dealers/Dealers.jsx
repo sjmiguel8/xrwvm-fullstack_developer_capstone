@@ -12,42 +12,18 @@ function Dealers() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDealers = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/djangoapp/fetchDealers', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          },
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Fetched dealers:', data);
-        
-        if (Array.isArray(data)) {
-          setDealers(data);
-          setFilteredDealers(data);
-          setError(null);
-        } else {
-          throw new Error('Expected array of dealers');
-        }
-      } catch (error) {
-        console.error('Error fetching dealers:', error);
-        setError('Failed to load dealers');
-        setDealers([]);
-        setFilteredDealers([]);
-      } finally {
+    fetch('https://staging.d2gtyto3nyfjvh.amplifyapp.com/djangoapp/get_dealers/')
+      .then(response => response.json())
+      .then(data => {
+        setDealers(data);
         setLoading(false);
-      }
-    };
-
-    fetchDealers();
-  }, []);
+      })
+      .catch(error => {
+        setError('Error: ' + error.message);
+        console.error('Error:', error);
+        setLoading(false);
+      });
+  }, [error]);
 
   const handleFilterChange = (type, value) => {
     setFilterType(type);
@@ -82,7 +58,6 @@ function Dealers() {
         <h2>Car Dealers</h2>
         
         {error && <div className="alert alert-danger">{error}</div>}
-        
         {loading ? (
           <div>Loading dealers...</div>
         ) : (
