@@ -1,0 +1,14 @@
+# AWS Credentials
+aws_access_key = "YOUR_AWS_ACCESS_KEY"
+aws_secret_key = "YOUR_AWS_SECRET_KEY"
+
+# MongoDB Atlas Credentials
+mongodb_atlas_public_key  = "YOUR_MONGODB_ATLAS_PUBLIC_KEY"
+mongodb_atlas_private_key = "YOUR_MONGODB_ATLAS_PRIVATE_KEY"
+mongodb_atlas_project_id  = "YOUR_MONGODB_ATLAS_PROJECT_ID"
+
+# GitHub Token for Amplify repository access
+github_token = "YOUR_GITHUB_TOKEN"
+
+# Environment
+environment = "dev"  # or "prod"
