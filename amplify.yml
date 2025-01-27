@@ -3,14 +3,21 @@ frontend:
   phases:
     preBuild:
       commands:
+        - cd server/frontend
         - npm ci
+        - cd ../..
     build:
       commands:
+        - cd server/frontend
         - npm run build
+        - cd ../..
   artifacts:
     baseDirectory: server/frontend/build
     files:
       - '**/*'
+  cache:
+    paths:
+      - server/frontend/node_modules/**/*
 backend:
   phases:
     preBuild:
@@ -21,14 +28,18 @@ backend:
         - nvm use 18.19.0
         - cd server/database
         - npm ci
+        - cd ../..
     build:
       commands:
+        - cd server/database
         - echo "MONGODB_URI=${MONGODB_URI}" >> .env
         - npm run build
-  postBuild:
-    commands:
-      - export PORT=8080
-      - node app.js
+        - cd ../..
+    postBuild:
+      commands:
+        - cd server/database
+        - export PORT=8080
+        - node app.js
   artifacts:
     baseDirectory: server/database
     files:
@@ -36,4 +47,4 @@ backend:
   discard-paths: no
   cache:
     paths:
-      - node_modules/**/*
+      - server/database/node_modules/**/*
