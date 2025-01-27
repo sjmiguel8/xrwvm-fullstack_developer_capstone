@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - cd server/frontend
+        - cd frontend
         - npm ci
     build:
       commands:
