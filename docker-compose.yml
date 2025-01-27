@@ -9,7 +9,7 @@ services:
   express_app:
     build: 
       context: ./server/database
-      dockerfile: Dockerfile
+      dockerfile: ./server/database/Dockerfile
     ports:
       - "3030:3030"
     depends_on:
@@ -23,7 +23,7 @@ services:
   django_app:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: ./server/Dockerfile
     ports:
       - "8000:8000"
     volumes:
@@ -35,7 +35,7 @@ services:
   react_app:
     build:
       context: ./server/frontend
-      dockerfile: Dockerfile
+      dockerfile: ./server/frontend/Dockerfile
     ports:
       - "3000:3000"
     volumes:
