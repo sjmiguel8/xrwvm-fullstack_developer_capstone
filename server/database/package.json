@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "echo \"Building database server\"",
+    "build": "echo \"Building database server\" && npm install --production && npm prune --production",
     "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "eslint .",

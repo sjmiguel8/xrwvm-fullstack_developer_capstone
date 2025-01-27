@@ -5,12 +5,9 @@ frontend:
       commands:
         - cd server/frontend
         - npm ci
-        - cd ../..
     build:
       commands:
-        - cd server/frontend
         - npm run build
-        - cd ../..
   artifacts:
     baseDirectory: server/frontend/build
     files:
@@ -22,29 +19,22 @@ backend:
   phases:
     preBuild:
       commands:
-        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-        - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        - nvm install 18.19.0
-        - nvm use 18.19.0
         - cd server/database
         - npm ci
-        - cd ../..
     build:
       commands:
-        - cd server/database
         - echo "MONGODB_URI=${MONGODB_URI}" >> .env
         - npm run build
-        - cd ../..
-    postBuild:
-      commands:
-        - cd server/database
-        - export PORT=8080
-        - node app.js
   artifacts:
     baseDirectory: server/database
     files:
       - '**/*'
-  discard-paths: no
+    discard-paths: no
   cache:
     paths:
       - server/database/node_modules/**/*
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: 'Cache-Control'
+          value: 'max-age=0, no-cache, no-store, must-revalidate'
